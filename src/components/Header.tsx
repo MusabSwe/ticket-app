@@ -6,11 +6,13 @@ import Sidebar from './Sidebar/Sidebar';
 import { FaHouse } from "react-icons/fa6";
 import { MdEvent, MdContactSupport } from "react-icons/md";
 import { IoLogIn } from "react-icons/io5";
+import SignIn from './Signin';
 
 
 export default function Header() {
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+    const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -31,7 +33,12 @@ export default function Header() {
                 </div>
 
                 <div className='hidden lg:flex justify-center items-center space-x-5 w-[30%] '>
-                    <button className='text-white cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>Log in</button>
+                    <button
+                        className='text-white cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'
+                        onClick={() => { setShowLoginModal(true) }}
+                    >
+                        Log in
+                    </button>
                     <div className='text-white cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>
                         <GrLanguage
                             style={{ width: '20px', height: '20px' }}
@@ -71,7 +78,7 @@ export default function Header() {
                     <div className='space-y-3'>
                         <button className='flex space-x-2 items-center text-[#3D474F] cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>
                             <IoLogIn />
-                            <span>Log in </span>
+                            <span onClick={() => { setShowLoginModal(true); toggleMenu() }}>Log in </span>
                         </button>
                         <div className='flex space-x-2 items-center text-[#3D474F] cursor-pointer transition delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>
                             <GrLanguage
@@ -82,6 +89,10 @@ export default function Header() {
                     </div>
                 </nav>
             </Sidebar>
+            <SignIn
+                isOpen={showLoginModal}
+                setIsOpen={setShowLoginModal}
+            />
         </>
     )
 }
