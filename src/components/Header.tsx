@@ -6,7 +6,7 @@ import Sidebar from './Sidebar/Sidebar';
 import { FaHouse } from "react-icons/fa6";
 import { MdEvent, MdContactSupport } from "react-icons/md";
 import { IoLogIn } from "react-icons/io5";
-import SignIn from './Signin';
+import SignIn from './SignIn';
 
 
 export default function Header() {
@@ -18,7 +18,7 @@ export default function Header() {
 
     return (
         <>
-            <section className="flex justify-around fixed top-0 w-full h-16 bg-[#3D474F]">
+            <section className="flex justify-around fixed top-0 z-10 w-full h-16 bg-[#3D474F]">
 
                 <div className='w-[20%] flex lg:justify-center py-2'>
                     <img src={logo} alt="logo" className='rounded-full w-12 cursor-pointer' />

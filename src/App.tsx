@@ -9,7 +9,7 @@ function App() {
     console.log('lang: ', lang);
   }, [])
   return (
-    <main className="h-screen flex flex-col justify-between overflow-x-hidden font-serif">
+    <main className="h-screen flex flex-col justify-between overflow-x-hidden font-mono">
       <Header />
       <div className="mt-16">
         <Home />

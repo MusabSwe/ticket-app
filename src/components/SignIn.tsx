@@ -25,7 +25,9 @@ export default function SignIn({ isOpen, setIsOpen }: SignInProps) {
                 className={isOpen ? "modal" : "hidden"}
             >
                 {/* Modal content */}
-                <div className="modal-content">
+                <div
+                    className="modal-content"
+                >
                     <span onClick={() => { setIsOpen(false) }}><CgClose className="cursor-pointer hover:text-[red]" /></span>
                     <div className="flex justify-center">
                         <img
@@ -78,7 +80,7 @@ export default function SignIn({ isOpen, setIsOpen }: SignInProps) {
 
                             <button
                                 type="submit"
-                                className="bg-[#4AD2FF] transition delay-100 duration-150 ease-in-out p-1 text-white text-sm w-full mt-4 rounded hover:bg-[#FF9F77] cursor-pointer"
+                                className="bg-[#3D474F] transition delay-100 duration-150 ease-in-out p-1 text-white text-sm w-full mt-4 rounded hover:bg-[#FF9F77] cursor-pointer"
                             >
                                 Login
                             </button>
