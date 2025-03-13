@@ -4,7 +4,7 @@ import { GrLanguage } from "react-icons/gr";
 import { useState } from 'react';
 import Sidebar from './Sidebar/Sidebar';
 import { FaHouse } from "react-icons/fa6";
-import { MdEvent, MdContactSupport } from "react-icons/md";
+import { MdEvent } from "react-icons/md";
 import { IoLogIn } from "react-icons/io5";
 import SignIn from './SignIn';
 
@@ -28,7 +28,7 @@ export default function Header() {
                     <ul className='items-center text-white h-full space-x-5 hidden lg:flex'>
                         <li className='cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>Home</li>
                         <li className='cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>Events</li>
-                        <li className='cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>Contact us</li>
+                        {/* <li className='cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>Contact us</li> */}
                     </ul>
                 </div>
 
@@ -70,10 +70,10 @@ export default function Header() {
                             <MdEvent />
                             <span>Events</span>
                         </li>
-                        <li className='flex space-x-2 items-center cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>
+                        {/* <li className='flex space-x-2 items-center cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>
                             <MdContactSupport />
                             <span>Contact us</span>
-                        </li>
+                        </li> */}
                     </ul>
                     <div className='space-y-3'>
                         <button className='flex space-x-2 items-center text-[#3D474F] cursor-pointer transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>
