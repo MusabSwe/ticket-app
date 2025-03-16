@@ -4,6 +4,8 @@ import Diryah from "../assets/diryah.jpg";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { ChangeEvent, useState } from "react";
+import { useNavigate } from "react-router";
+
 interface Event {
     id: number;
     event: string;
@@ -60,6 +62,7 @@ const events: Event[] = [
 export default function Events() {
 
     const [fetchedEvents, setFetchedEvents] = useState<Event[]>(events);
+    const navigate = useNavigate();
 
     const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -133,6 +136,7 @@ export default function Events() {
                                     <div className="flex items-center md:mt-2">
                                         <button
                                             className="text-sm bg-[#FF9F77] p-2 min-w-[78px] cursor-pointer transition delay-75 duration-150 ease-in-out hover:bg-[#ffb477] rounded w-full text-white"
+                                            onClick={() => { navigate('/event-details', { state: event }) }}
                                         >
                                             Book Now
                                         </button>

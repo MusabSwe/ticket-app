@@ -1,5 +1,6 @@
 import "./Sidebar.css";
 import logo from '../../assets/Ticket-logo.png';
+import { useNavigate } from "react-router";
 interface SideProps {
     isOpen: boolean;
     onClose: () => void;
@@ -24,6 +25,8 @@ export default function Sidebar({
     boxShadow = '0 4px 10px #0000001a'
 }: SideProps) {
 
+    const navigate = useNavigate();
+
     return (
         <>
             {isOpen && (
@@ -43,7 +46,13 @@ export default function Sidebar({
                     boxShadow
                 }}
             >
-                <img src={logo} alt="logo" className='rounded-full w-12' />
+                <img
+                    src={logo}
+                    alt="logo"
+                    className='rounded-full w-12'
+                    onClick={() => { navigate('/'); }}
+
+                />
                 <button className="offcanvas-close-btn" onClick={onClose}>&times;</button>
                 <div className="offcanvas-content">{children}</div>
             </div>

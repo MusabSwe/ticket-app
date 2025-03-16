@@ -5,7 +5,8 @@ import { FiFacebook } from 'react-icons/fi';
 import { AiOutlineYoutube } from 'react-icons/ai';
 
 export default function Footer() {
-
+    const year = new Date().getFullYear();
+    
     return (
         <section
             className="bg-[#3D474F] p-5 px-7 lg:px-18"
@@ -56,7 +57,7 @@ export default function Footer() {
                 <hr className='border-white my-5' />
                 <div className='flex flex-wrap flex-row justify-between'>
                     <p className='text-xs text-white transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>Powered by Ticket</p>
-                    <p className='text-xs text-white transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>All Rights Reserved © Ticket 2025</p>
+                    <p className='text-xs text-white transition  delay-75 duration-150 ease-in-out hover:text-[#FF9F77]'>All Rights Reserved © Ticket {year}</p>
                 </div>
             </div>
         </section>
