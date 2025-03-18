@@ -11,7 +11,9 @@ interface Event {
     event: string;
     location: string;
     img: string;
-    date: Date;
+    startDate: Date;
+    endDate: Date;
+    price: number | string;
 }
 
 const events: Event[] = [
@@ -20,42 +22,54 @@ const events: Event[] = [
         event: 'Iftaar',
         img: kafdImg,
         location: 'KAFD - East of King Fahd Road',
-        date: new Date(),
+        startDate: new Date(), // chnage to be range of dates 
+        endDate: new Date('03/31/2025'),
+        price: 28, // ticket price
     },
     {
         id: 2,
         event: 'Diriyah',
         img: Diryah,
         location: 'Albujayri - East of King Fahd Road',
-        date: new Date(),
+        startDate: new Date(), // chnage to be range of dates 
+        endDate: new Date('03/31/2025'),
+        price: 49.99
     },
     {
         id: 3,
         event: 'Festival',
         img: kafdImg,
         location: 'Boulevard - King Salman Bin Abdulaziz Road',
-        date: new Date(),
+        startDate: new Date(), // chnage to be range of dates 
+        endDate: new Date('03/31/2025'),
+        price: 375
     },
     {
         id: 4,
         event: 'Iftaar',
         img: kafdImg,
         location: 'KAFD - East of King Fahd Road',
-        date: new Date(),
+        startDate: new Date(), // chnage to be range of dates 
+        endDate: new Date('03/31/2025'),
+        price: 219
     },
     {
         id: 5,
         event: 'Diriyah',
         img: Diryah,
         location: 'Albujayri - East of King Fahd Road',
-        date: new Date(),
+        startDate: new Date(), // chnage to be range of dates 
+        endDate: new Date('03/31/2025'),
+        price: 185
     },
     {
         id: 6,
         event: 'Festival',
         img: kafdImg,
         location: 'Boulevard - King Salman Bin Abdulaziz Road',
-        date: new Date(),
+        startDate: new Date(), // chnage to be range of dates 
+        endDate: new Date('03/31/2025'),
+        price: 78
     }
 ];
 
@@ -106,34 +120,34 @@ export default function Events() {
                                 key={event.id - 1}
                                 className="rounded-2xl border border-[#3D474F] p-3 w-full md:w-1/4 lg:w-1/3 lg:max-w-[258px]"
                             >
-                                <div className="flex justify-between  md:block">
-                                    <div className="flex md:block">
+                                <div className="sm:flex justify-between  md:block">
+                                    <div className="sm:flex md:block">
                                         <div>
                                             <img
                                                 src={event.img}
                                                 alt="Event-img"
-                                                className="rounded-2xl max-w-[120px] w-[120px]  md:max-w-full md:w-full h-[120px] md:h-[140px]"
+                                                className="rounded-2xl sm:max-w-[120px] sm:w-[120px]  md:max-w-full md:w-full sm:h-[120px] md:h-[140px]"
                                             />
                                         </div>
 
                                         <div>
-                                            <h4 className="text-sm md:text-xl font-bold px-2 py-2 text-[#FF9F77]">{event.event}</h4>
+                                            <h4 className="sm:text-sm md:text-xl font-bold px-2 py-2 text-[#FF9F77]">{event.event}</h4>
                                             <div className="px-3 space-y-2">
                                                 <div className="flex space-x-2">
                                                     <FaMapLocationDot className="w-5 h-5" color="#3D474F" />
-                                                    <span className="text-xs md:text-sm ">{event.location}</span>
+                                                    <span className="sm:text-xs md:text-sm ">{event.location}</span>
                                                 </div>
                                                 <div className="flex space-x-2">
                                                     <HiMiniCalendarDateRange className="w-5 h-5" color="#3D474F" />
-                                                    <span className="text-xs md:text-sm">
-                                                        {event.date.toDateString() + ' | ' + event.date.toLocaleTimeString()}
+                                                    <span className="sm:text-xs md:text-sm">
+                                                        {event.startDate.toISOString().split('T')[0] + ' | ' + event.endDate.toISOString().split('T')[0]}
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center md:mt-2">
+                                    <div className="flex items-center mt-2 sm:mt-0 md:mt-2">
                                         <button
                                             className="text-sm bg-[#FF9F77] p-2 min-w-[78px] cursor-pointer transition delay-75 duration-150 ease-in-out hover:bg-[#ffb477] rounded w-full text-white"
                                             onClick={() => { navigate('/event-details', { state: event }) }}
