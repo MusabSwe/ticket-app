@@ -1,8 +1,6 @@
 import Fastify from "fastify";
 import dotenv from 'dotenv';
 import MYSQL from '@fastify/mysql';
-
-// Import my routes
 import eventRoutes from './routes/events.routes';
 
 // sharable code
@@ -13,13 +11,17 @@ const fastify = Fastify({ logger: true });
 // Connect to my database
 async function connectToDB() {
     await fastify.register(MYSQL, {
+        promise: true,
         connectionString: `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB}`,
     });
     console.log('Successfully connected to the databases');
 }
 
+// Import my routes
+fastify.register(eventRoutes.routes);
+
+
 // start my server
-fastify.register(eventRoutes.routes, { 'prefix': 'api/v1/' })
 const start = async () => {
     try {
         const port = Number(process.env.PORT) || 5000;

@@ -1,12 +1,14 @@
 "use strict";
-// import Events from '../models/events.model';
 Object.defineProperty(exports, "__esModule", { value: true });
 async function getAllEvents(request, reply) {
     try {
-        reply.send("Not implemented all events yet");
+        const app = request.server.mysql;
+        // Ensure MySQL2 returns a promise-based response
+        const [rows] = await app.query('SELECT * FROM sa_events');
+        return reply.send(rows); // Return to prevent multiple replies
     }
     catch (error) {
-        reply.status(500).send(error);
+        return reply.status(500).send(error);
     }
 }
 async function getReservedEvents(request, reply) {
@@ -19,15 +21,29 @@ async function getReservedEvents(request, reply) {
 }
 async function getAvailableTickets(request, reply) {
     try {
-        reply.send("Not implemented Available Tickets yet");
+        const app = request.server.mysql;
+        const { eventId, eventDate } = request.query;
+        const [rows] = await app.query(eventDate ? `
+            select *
+            from tickets
+            where event_id = ? AND event_date = ?
+        `
+            :
+                `
+            select *
+            from tickets
+            where event_id = ?
+        `, [eventId, eventDate]);
+        return reply.send(rows);
     }
     catch (error) {
-        reply.status(500).send(error);
+        return reply.status(500).send(error);
     }
 }
 async function bookEvent(request, reply) {
     try {
-        reply.send("Not implemented bookEvent yet");
+        const app = request.server.mysql;
+        const body = {};
     }
     catch (error) {
         reply.status(500).send(error);

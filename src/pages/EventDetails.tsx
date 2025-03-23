@@ -32,7 +32,10 @@ export default function EventDetails() {
             img: location?.state?.img,
             tickets: formData.tickets,
             date: formData.date,
-            price: formData.price
+            price: formData.price,
+            // ticketId:'',
+            // eventId:'',
+            // bookedTickets:'',
         }
 
         console.log('handleSubmitToCart: ', selectedEvents);

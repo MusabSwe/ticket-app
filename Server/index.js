@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fastify_1 = __importDefault(require("fastify"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const mysql_1 = __importDefault(require("@fastify/mysql"));
-// Import my routes
 const events_routes_1 = __importDefault(require("./routes/events.routes"));
 // sharable code
 // to enable reading from .env file
@@ -15,12 +14,14 @@ const fastify = (0, fastify_1.default)({ logger: true });
 // Connect to my database
 async function connectToDB() {
     await fastify.register(mysql_1.default, {
+        promise: true,
         connectionString: `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB}`,
     });
     console.log('Successfully connected to the databases');
 }
+// Import my routes
+fastify.register(events_routes_1.default.routes);
 // start my server
-fastify.register(events_routes_1.default.routes, { 'prefix': 'api/v1/' });
 const start = async () => {
     try {
         const port = Number(process.env.PORT) || 5000;
