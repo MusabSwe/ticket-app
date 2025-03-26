@@ -34,7 +34,6 @@ export default function EventDetails() {
             date: formData.date,
             price: formData.price,
             // ticketId:'',
-            // eventId:'',
             // bookedTickets:'',
         }
 

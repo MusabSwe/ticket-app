@@ -6,7 +6,7 @@ async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
     fastify.get("/reserved-events", eventsController.getReservedEvents);
     fastify.get("/available-tickets", eventsController.getAvailableTickets);
     fastify.post("/book-event", eventsController.bookEvent);
-    fastify.delete("/remove-event", eventsController.removeEvent);
+    fastify.delete("/cancel-reservation", eventsController.removeEvent);
 }
 
 export default {

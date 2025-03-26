@@ -20,7 +20,6 @@ async function connectToDB() {
 // Import my routes
 fastify.register(eventRoutes.routes);
 
-
 // start my server
 const start = async () => {
     try {
@@ -38,5 +37,6 @@ const start = async () => {
         process.exit(1);
     }
 }
+
 connectToDB();
 start();

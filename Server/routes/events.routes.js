@@ -9,7 +9,7 @@ async function routes(fastify, options) {
     fastify.get("/reserved-events", events_controller_1.default.getReservedEvents);
     fastify.get("/available-tickets", events_controller_1.default.getAvailableTickets);
     fastify.post("/book-event", events_controller_1.default.bookEvent);
-    fastify.delete("/remove-event", events_controller_1.default.removeEvent);
+    fastify.delete("/cancel-reservation", events_controller_1.default.removeEvent);
 }
 exports.default = {
     routes
