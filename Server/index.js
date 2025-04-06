@@ -21,7 +21,7 @@ async function connectToDB() {
 }
 // Handle cors issue
 fastify.addHook('onRequest', async (req, reply) => {
-    reply.header('access-control-allow-origin', 'http://localhost:5173/');
+    reply.header('access-control-allow-origin', 'http://localhost:5173');
     reply.header('access-control-allow-methods', 'GET,POST,PUT,DELETE,OPTIONS');
     reply.header('access-control-allow-headers', 'Content-Type, Authorization');
     // Handle preflight requests (OPTIONS)

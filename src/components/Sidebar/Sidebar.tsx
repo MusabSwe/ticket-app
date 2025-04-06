@@ -1,6 +1,7 @@
 import "./Sidebar.css";
 import logo from '../../assets/Ticket-logo.png';
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 interface SideProps {
     isOpen: boolean;
     onClose: () => void;
@@ -26,7 +27,7 @@ export default function Sidebar({
 }: SideProps) {
 
     const navigate = useNavigate();
-
+    const [_, i18n] = useTranslation();
     return (
         <>
             {isOpen && (
@@ -46,14 +47,16 @@ export default function Sidebar({
                     boxShadow
                 }}
             >
-                <img
-                    src={logo}
-                    alt="logo"
-                    className='rounded-full w-12'
-                    onClick={() => { navigate('/'); }}
+                <div className={`flex ${i18n.language == 'ar' ? 'justify-end float-end' : ''}`} >
+                    <img
+                        src={logo}
+                        alt="logo"
+                        className='rounded-full w-12 cursor-pointer'
+                        onClick={() => { navigate('/'); onClose(); }}
 
-                />
-                <button className="offcanvas-close-btn" onClick={onClose}>&times;</button>
+                    />
+                    <button className="offcanvas-close-btn" onClick={onClose}>&times;</button>
+                </div>
                 <div className="offcanvas-content">{children}</div>
             </div>
         </>

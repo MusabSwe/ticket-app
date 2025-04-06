@@ -2,6 +2,7 @@ import { CgClose } from "react-icons/cg";
 import "./Modal.css";
 import SAR from '../assets/Saudi_Riyal.png';
 import { useCartEvents } from "../store/CartContext";
+import { useTranslation } from "react-i18next";
 interface CartProps {
     isOpen: boolean;
     setIsOpen: any;
@@ -9,6 +10,7 @@ interface CartProps {
 
 export default function Cart({ isOpen, setIsOpen }: CartProps) {
 
+    const [_, i18n] = useTranslation();
     const selectedEvents = useCartEvents();
 
     const handlePayment = () => {
@@ -32,11 +34,11 @@ export default function Cart({ isOpen, setIsOpen }: CartProps) {
                     </span>
                     <div className='min-h-40 overflow-auto max-h-[304px] rounded pb-4'>
                         <div className='flex w-full justify-around font-extrabold pt-1 text-[#FF9F77] '>
-                            <div className='text-sm text-center w-[15%]'> Event </div>
-                            <p className='text-sm text-center w-1/4'> Tickets </p>
-                            <p className='text-sm text-center w-[35%]'> Date </p>
+                            <div className='text-sm text-center w-[15%]'> {i18n.language == 'ar' ? 'الحدث' : 'Event'} </div>
+                            <p className='text-sm text-center w-1/4'> {i18n.language == 'ar' ? 'التذاكر' : 'Tickets'} </p>
+                            <p className='text-sm text-center w-[35%]'> {i18n.language == 'ar' ? 'التاريخ' : 'Date'} </p>
                             <p className='text-sm justify-center w-1/4 flex items-center space-x-1'>
-                                <span>Price</span>
+                                <span> {i18n.language == 'ar' ? 'السعر' : 'Price'} </span>
                                 <img src={SAR} className='w-4 h-4' alt="SAR" />
                             </p>
                         </div>
@@ -52,8 +54,8 @@ export default function Cart({ isOpen, setIsOpen }: CartProps) {
                         ))}
 
                         {selectedEvents.length == 0 ?
-                            <div className='text-2xl flex justify-center items-end h-[85px]'>
-                                <p className='text-[#FF9F77]'>No events added</p>
+                            <div className='text-xl flex justify-center items-end h-[85px]'>
+                                <p className='text-[#FF9F77] tracking-tighter'> {i18n.language == 'ar' ? 'لم يتم إضافة أية أحداث' : 'No events added'} </p>
                             </div>
                             :
                             <div className="pt-3">
@@ -61,7 +63,7 @@ export default function Cart({ isOpen, setIsOpen }: CartProps) {
                                     className="p-2 text-white cursor-pointer bg-[#FF9F77] rounded w-full transition delay-75 duration-150 ease-in-out hover:bg-[#ffb477]"
                                     onClick={handlePayment}
                                 >
-                                    Pay
+                                    {i18n.language == 'ar' ? 'تأكيد الحجز' : 'Booking confirmation'}
                                 </button>
                             </div>
                         }

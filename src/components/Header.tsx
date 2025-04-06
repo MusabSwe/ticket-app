@@ -1,7 +1,7 @@
 import logo from '../assets/Ticket-logo.png';
 import { RiMenu4Fill } from "react-icons/ri";
 import { GrLanguage } from "react-icons/gr";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from './Sidebar/Sidebar';
 import SignIn from './SignIn';
 import { useNavigate } from 'react-router';
@@ -59,13 +59,12 @@ export default function Header() {
 
                         <MenuItems
                             transition
-                            className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+                            className={`absolute ${i18n.language == 'ar' ? 'lg:left-0' : 'right-0'} z-10 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in`}
                         >
                             <div className="py-1">
                                 <MenuItem>
                                     <a
-                                        // href="#"
-                                        onClick={() => { i18n.changeLanguage('ar'); console.log('AR') }}
+                                        onClick={() => { i18n.changeLanguage('ar'); localStorage.setItem('lang', 'ar'); }}
                                         className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                                     >
                                         Arabic
@@ -73,8 +72,7 @@ export default function Header() {
                                 </MenuItem>
                                 <MenuItem>
                                     <a
-                                        // href="#"
-                                        onClick={() => { i18n.changeLanguage('en'), console.log('EN') }}
+                                        onClick={() => { i18n.changeLanguage('en'); localStorage.setItem('lang', 'en'); }}
                                         className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                                     >
                                         English
@@ -96,14 +94,14 @@ export default function Header() {
                             onClick={() => { setShowCart((prevShowCart) => !prevShowCart) }}
                         />
                         {showCart &&
-                            <div className='absolute bg-white opacity-100 shadow-2xl w-150 left-[-570px] top-7 rounded pb-4'>
+                            <div className={`absolute bg-white opacity-100 shadow-2xl w-150 ${i18n.language == 'ar' ? 'right-[-570px]' : 'left-[-570px]'} top-7 rounded pb-4`} >
                                 <div className='overflow-y-auto min-h-40  max-h-[304px] mx-2'>
                                     <div className='flex w-full justify-around font-extrabold pt-1 text-[#FF9F77] '>
-                                        <div className='text-sm text-center w-1/4'> Event </div>
-                                        <p className='text-sm text-center w-1/4'> Tickets </p>
-                                        <p className='text-sm text-center w-1/4'> Date </p>
+                                        <div className='text-sm text-center w-1/4'> {i18n.language == 'ar' ? 'الحدث' : 'Event'} </div>
+                                        <p className='text-sm text-center w-1/4'> {i18n.language == 'ar' ? 'التذاكر' : 'Tickets'} </p>
+                                        <p className='text-sm text-center w-1/4'> {i18n.language == 'ar' ? 'التاريخ' : 'Date'} </p>
                                         <p className='text-sm justify-center w-1/4 flex items-center space-x-1'>
-                                            <span>Price</span>
+                                            <span> {i18n.language == 'ar' ? 'السعر' : 'Price'} </span>
                                             <img src={SAR} className='w-4 h-4' alt="SAR" />
                                         </p>
                                     </div>
@@ -120,7 +118,9 @@ export default function Header() {
 
                                     {selectedEvents.length == 0 ?
                                         <div className='text-2xl flex justify-center items-end h-[85px]'>
-                                            <p className='text-[#FF9F77]'>No events added</p>
+                                            <p className='text-[#FF9F77]'>
+                                                {i18n.language == 'ar' ? 'لم يتم إضافة أية أحداث' : 'No events added'}
+                                            </p>
                                         </div>
                                         :
 
@@ -129,7 +129,7 @@ export default function Header() {
                                                 className="p-2 text-white cursor-pointer bg-[#FF9F77] rounded w-full transition delay-75 duration-150 ease-in-out hover:bg-[#ffb477]"
                                             // onClick={handlePayment}
                                             >
-                                                Pay
+                                                {i18n.language == 'ar' ? 'تأكيد الحجز' : 'Booking confirmation'}
                                             </button>
                                         </div>
                                     }
@@ -150,7 +150,7 @@ export default function Header() {
             <Sidebar
                 isOpen={isMenuOpen}
                 onClose={toggleMenu}
-                position='left'
+                position={i18n.language == 'ar' ? 'right' : 'left'}
             >
                 <nav className='flex flex-col justify-between h-full'>
                     <ul className='text-[#3D474F] h-full space-y-3'>
@@ -181,9 +181,11 @@ export default function Header() {
                             <FaShoppingCart
                                 style={{ width: '18px', height: '18px' }}
                             />
-                            <span>Cart</span>
+                            <span>
+                                {i18n.language == 'ar' ? 'السلة' : 'Cart'}
+                            </span>
                         </div>
-                        <Menu as="div" className="relative inline-block text-left">
+                        <Menu as="div" className="relative inline-block">
                             <div>
                                 <MenuButton
                                     className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white py-2 text-sm font-semibold text-[#3D474F] shadow-xs"
@@ -192,14 +194,14 @@ export default function Header() {
                                         <GrLanguage
                                             style={{ width: '18px', height: '18px' }}
                                         />
-                                        <span > Language </span>
+                                        <span > {i18n.language == 'ar' ? 'اللغة' : 'Language'} </span>
                                     </div>
                                 </MenuButton>
                             </div>
 
                             <MenuItems
                                 transition
-                                className="absolute right-0 z-11 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+                                className="absolute left-0 z-11 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
                                 anchor="bottom start"
                             >
                                 <div className="py-1">

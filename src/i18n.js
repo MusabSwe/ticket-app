@@ -16,7 +16,7 @@ i18n
     .use(initReactI18next)
     .init({
         resources,
-        lng: "en",
+        lng: localStorage.getItem('lang') ? localStorage.getItem('lang') : "ar",
         interpolation: {
             escapeValue: false // react already safes from xss
         },

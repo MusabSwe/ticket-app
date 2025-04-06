@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 function App() {
 
   const [_, i18n] = useTranslation();
-
+  
   useEffect(() => {
     window.document.body.lang = i18n.language;
     window.document.documentElement.lang = i18n.language;

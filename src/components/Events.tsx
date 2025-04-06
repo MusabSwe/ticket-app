@@ -3,6 +3,7 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 
 interface Event {
     event_id: number;
@@ -17,6 +18,7 @@ export default function Events() {
 
     const [fetchedEvents, setFetchedEvents] = useState<Event[]>([]);
     const [allEvents, setAllEvents] = useState<Event[]>([]);
+    const [_, i18n] = useTranslation();
 
     const navigate = useNavigate();
 
@@ -60,20 +62,24 @@ export default function Events() {
             <div className="bg-[#3D474F] p-5 rounded-2xl relative mb-4">
                 <input
                     type="text"
-                    placeholder="Search for an event"
+                    placeholder={i18n.language == 'ar' ? "البحث عن حدث" : "Search for an event"}
                     className="w-full border-1 text-[#FF9F77] border-white p-3 rounded-2xl focus:outline-0 focus:border-1 focus:border-[#FF9F77]"
                     onChange={handleSearch}
                 />
                 <TbListSearch
                     color="#FF9F77"
-                    className="absolute top-8 right-8 w-6 h-6"
+                    className={`absolute top-8 ${i18n.language == 'en' ? 'right-8' : 'left-8'} w-6 h-6`}
                 />
             </div>
             {/* Events section */}
             <div className="flex flex-wrap md:justify-center lg:justify-start gap-3">
                 {fetchedEvents?.length == 0 ?
                     <div className="text-center w-full text-2xl text-[#FF9F77] my-2">
-                        No Events
+                        {i18n.language == 'en'
+                            ? 'No Events'
+                            :
+                            'لا يوجد أحداث'
+                        }
                     </div>
                     :
                     fetchedEvents.map((event) => {
@@ -115,7 +121,7 @@ export default function Events() {
                                             className="text-sm bg-[#FF9F77] p-2 min-w-[78px] cursor-pointer transition delay-75 duration-150 ease-in-out hover:bg-[#ffb477] rounded w-full text-white"
                                             onClick={() => { navigate('/event-details', { state: event }) }}
                                         >
-                                            Book Now
+                                            {i18n.language == 'ar' ? 'إحجز الآن' : 'Book Now'}
                                         </button>
                                     </div>
                                 </div>

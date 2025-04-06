@@ -5,6 +5,7 @@ import { useLocation } from "react-router"
 import SAR from '../assets/Saudi_Riyal.png';
 import { useCartEventUpdate } from '../store/CartContext';
 import Message from "../components/Message";
+import { useTranslation } from "react-i18next";
 
 interface TicketForm {
     reservedDate: string;
@@ -28,6 +29,7 @@ export default function EventDetails() {
     const location = useLocation();
     const addEvents = useCartEventUpdate();
 
+    const [_, i18n] = useTranslation();
     const [formData, setFormData] = useState<TicketForm>({
         reservedDate: '', // reservation date
         tickets: 1,
@@ -46,6 +48,7 @@ export default function EventDetails() {
         ticket_id: 0,
         total_tickets: 0
     });
+
 
     const handleSubmitToCart = () => {
         console.log('formData: ', formData);
@@ -125,7 +128,7 @@ export default function EventDetails() {
                             alt="Event-img"
                             className="h-[333px] w-full rounded-2xl"
                         />
-                        <div className="absolute bottom-5 left-2">
+                        <div className={`absolute bottom-5 ${i18n.language == 'ar' ? '' : 'left-2'}`} >
                             <h1 className="text-2xl font-extrabold px-2 py-2 text-white">{location?.state?.event_name}</h1>
                             <div className="px-3 space-y-2">
                                 <div className="flex space-x-2">
@@ -142,13 +145,25 @@ export default function EventDetails() {
                         </div>
                     </div>
                     <div className="mt-2">
-                        <h3 className="text-2xl">Event Details</h3>
+                        <h3 className="text-2xl"> {i18n.language == 'ar' ? 'تفاصيل الفعالية' : 'Event Details'} </h3>
                         <p className="text-[#9E9E9E]">
-                            Terms & Conditions:
+                            {i18n.language == 'ar' ? 'الشروط والأحكام:' : 'Terms & Conditions:'}
                         </p>
                         <ul className="list-disc px-7 text-[#9E9E9E] space-y-2 tracking-tighter">
-                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi, rem possimus rerum hic, enim in sapiente eius ut dolorum ratione dolorem optio fugiat placeat consectetur a facilis? Blanditiis, vel rem.</li>
-                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime, illo, eaque repellendus vel rem labore ad veritatis tempora suscipit dolor dolore atque sapiente possimus delectus cupiditate praesentium nobis quasi cumque.</li>
+                            <li>
+                                {i18n.language == 'en' ?
+                                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi, rem possimus rerum hic, enim in sapiente eius ut dolorum ratione dolorem optio fugiat placeat consectetur a facilis? Blanditiis, vel rem.'
+                                    :
+                                    'لوريم إيبسوم هو نص عربي غير معنى، يُستخدم في مجالات الطباعة ومواقع الويب كنص دال على الشكل والتخطيط. يمكنك اختيار عدد الفقرات وعدد الحروف ثم النقر علىهذا النص'
+                                }
+                            </li>
+                            <li>
+                                {i18n.language == 'en' ?
+                                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi, rem possimus rerum hic, enim in sapiente eius ut dolorum ratione dolorem optio fugiat placeat consectetur a facilis? Blanditiis, vel rem.'
+                                    :
+                                    'لوريم إيبسوم هو نص عربي غير معنى، يُستخدم في مجالات الطباعة ومواقع الويب كنص دال على الشكل والتخطيط. يمكنك اختيار عدد الفقرات وعدد الحروف ثم النقر علىهذا النص'
+                                }
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -167,15 +182,13 @@ export default function EventDetails() {
                             className="border-t flex flex-col justify-between md:border py-3 md:p-4 md:rounded-2xl mx-2 md:bg-slate-100 "
                         >
                             <div>
-                                <h3 className="text-2xl md:text-center"> Ticket Details </h3>
+                                <h3 className="text-2xl md:text-center">{i18n.language == 'ar' ? 'تفاصيل التذكرة' : 'Ticket Details'}</h3>
                                 <div className="pt-2 px-2 space-y-4">
-                                    <div>
-                                        <label htmlFor="event-date">Choose the date</label>
-                                        <br />
-
+                                    <div >
+                                        <label className="" htmlFor="event-date"> {i18n.language == 'ar' ? 'إختر التاريخ' : 'Choose the date'} </label>
                                         <select
                                             id="event-date"
-                                            className="border w-full p-3 rounded"
+                                            className="border w-full p-3 rounded mt-2 mb-1"
                                             onChange={(e) => {
                                                 const selectedEventTicket: any = eventTickets?.filter((t) => t.event_date == e.target.value)[0];
                                                 setFormData((prevFormData) => ({
@@ -187,7 +200,7 @@ export default function EventDetails() {
                                             value={formData.reservedDate}
                                             required
                                         >
-                                            <option value="">Select a date</option>
+                                            <option value=""> -- </option>
                                             {formData?.availableDates ? formData?.availableDates.map((date, index) => {
                                                 return (
                                                     <option
@@ -206,7 +219,7 @@ export default function EventDetails() {
                                     {formData.reservedDate &&
                                         <>
                                             <div>
-                                                <label htmlFor="tickets">Choose number of Tiktes</label>
+                                                <label htmlFor="tickets"> {i18n.language == 'ar' ? 'اختر عدد التذاكر' : 'Choose number of Tickets'} </label>
                                                 <div className="flex space-x-3 justify-between">
                                                     <button
                                                         type="button"
@@ -234,7 +247,7 @@ export default function EventDetails() {
                                                 </div>
                                             </div>
                                             <div className="flex justify-between items-center">
-                                                <span>Price:</span>
+                                                <span>{i18n.language == 'ar' ? 'السعر' : 'Price'}:</span>
                                                 <span className="w-20">{formData.price}</span>
                                                 <img
                                                     src={SAR}
@@ -251,7 +264,7 @@ export default function EventDetails() {
                                     type="submit"
                                     className="p-3 text-white cursor-pointer bg-[#FF9F77] rounded w-full transition delay-75 duration-150 ease-in-out hover:bg-[#ffb477]"
                                 >
-                                    Add To Cart
+                                    {i18n.language == 'ar' ? 'أضف إلى السلة' : 'Add To Cart'}
                                 </button>
                             </div>
                         </div>
