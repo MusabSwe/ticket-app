@@ -51,7 +51,7 @@ export default function EventDetails() {
 
 
     const handleSubmitToCart = () => {
-        console.log('formData: ', formData);
+        // console.log('formData: ', formData);
         const selectedEvents = {
             img: location?.state?.image_url,
             tickets: formData.tickets, // bookedTickets
@@ -60,7 +60,7 @@ export default function EventDetails() {
             // ticketId:'',
             // bookedTickets:'',
         }
-        console.log('handleSubmitToCart: ', selectedEvents);
+        // console.log('handleSubmitToCart: ', selectedEvents);
         addEvents(selectedEvents);
     }
 
@@ -68,19 +68,19 @@ export default function EventDetails() {
         // used to get available dates for the event (to show only available dates )
         fetch(`http://127.0.0.1:3000/available-tickets?eventId=${location.state.event_id}`)
             .then((res) => {
-                console.log('res:', res);
+                // console.log('res:', res);
                 return res.json();
             }).then((data) => {
-                console.log(`Ticket table for the event ${location.state.event_name}: `, data);
+                // console.log(`Ticket table for the event ${location.state.event_name}: `, data);
                 // setFetchedTickets(data);
                 setEventTickets(data); // store ticket table
 
                 const availableDates = data
                     .filter((ticket: TicketData) => ticket.booked_tickets < ticket.total_tickets)
                     .map((ticket: TicketData) => {
-                        console.log('Before: ', ticket.event_date);
+                        // console.log('Before: ', ticket.event_date);
                         const localDate = new Date(ticket.event_date).toLocaleDateString("en-CA"); // local time YYYY-MM-DD
-                        console.log('After: ', localDate);
+                        // console.log('After: ', localDate);
                         return localDate;
                     });
 
@@ -90,7 +90,7 @@ export default function EventDetails() {
                     availableDates: availableDates,
                 }));
 
-                console.log('availableDates:', availableDates);
+                // console.log('availableDates:', availableDates);
             }).catch((err) => {
                 console.log('Avaiable tickets error: ', err);
             })
@@ -100,10 +100,10 @@ export default function EventDetails() {
 
         formData.reservedDate && fetch(`http://127.0.0.1:3000/available-tickets?eventDate=${formData.reservedDate}&eventId=${location.state.event_id}`)
             .then((res) => {
-                console.log('res:', res);
+                // console.log('res:', res);
                 return res.json();
             }).then((data) => {
-                console.log('data:', data[0]);
+                // console.log('data:', data[0]);
                 setSelectedTicket(data[0]);
                 setFormData((prevData) => ({
                     ...prevData,

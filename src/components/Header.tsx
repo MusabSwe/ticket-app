@@ -1,7 +1,7 @@
 import logo from '../assets/Ticket-logo.png';
 import { RiMenu4Fill } from "react-icons/ri";
 import { GrLanguage } from "react-icons/gr";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Sidebar from './Sidebar/Sidebar';
 import SignIn from './SignIn';
 import { useNavigate } from 'react-router';
@@ -23,12 +23,14 @@ export default function Header() {
 
     const navigate = useNavigate();
 
+
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     return (
         <>
-            <section className="flex justify-around fixed top-0 z-10 w-full h-16 bg-[#3D474F]">
-
+            <section
+                className="flex justify-around fixed top-0 z-10 w-full h-16 bg-[#3D474F]"
+            >
                 <div className='w-[20%] flex lg:justify-center py-2'>
                     <img
                         src={logo}

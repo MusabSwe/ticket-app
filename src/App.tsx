@@ -7,11 +7,11 @@ import EventDetails from "./pages/EventDetails";
 
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import ScrollToTop from "./utility/ScrollToTop";
 
 function App() {
 
   const [_, i18n] = useTranslation();
-  
   useEffect(() => {
     window.document.body.lang = i18n.language;
     window.document.documentElement.lang = i18n.language;
@@ -21,10 +21,13 @@ function App() {
   }, [i18n.language])
 
   return (
-    <main className="h-screen flex flex-col justify-between overflow-x-hidden font-mono">
+    <main
+      className="h-screen flex flex-col justify-between font-mono"
+    >
       <Header />
       <div className="mt-16">
-        <Routes>
+        <ScrollToTop />
+        <Routes >
           <Route path="/" element={<Home />} />
           <Route path="/event-details" element={<EventDetails />} />
           <Route path="/*" element={<NotFound />} />
