@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { useLocation } from "react-router"
@@ -6,55 +6,111 @@ import SAR from '../assets/Saudi_Riyal.png';
 import { useCartEventUpdate } from '../store/CartContext';
 import Message from "../components/Message";
 
-interface TicketDetails {
-    date: string;
+interface TicketForm {
+    reservedDate: string;
     tickets: number;
     price: number | string;
+    availableDates?: Array<string>;
+    minDate?: string;
+    maxDate?: string;
+    eventTicket: TicketData[] | null | undefined // row from Ticket table
+}
+
+interface TicketData {
+    ticket_id: number;
+    event_id: number;
+    event_date: string;
+    ticket_price: number;
+    total_tickets: number;
+    booked_tickets: number;
 }
 
 export default function EventDetails() {
 
     const location = useLocation();
     const addEvents = useCartEventUpdate();
-    const price = location?.state?.price ? location?.state?.price : 0
 
-    const [formData, setFormData] = useState<TicketDetails>({
-        date: '', // reservation date
+    const [formData, setFormData] = useState<TicketForm>({
+        reservedDate: '', // reservation date
         tickets: 1,
-        price: price,
+        price: 0,
+        minDate: '',
+        maxDate: '',
+        availableDates: [],
+        eventTicket: null
     });
     const [showMsg, setShowMsg] = useState<boolean>(false);
+    const [eventTickets, setEventTickets] = useState<TicketData[]>();
 
+    const [selectedTicket, setSelectedTicket] = useState<TicketData>({
+        ticket_price: 0,
+        booked_tickets: 0,
+        event_date: '',
+        event_id: 0,
+        ticket_id: 0,
+        total_tickets: 0
+    });
 
     const handleSubmitToCart = () => {
         console.log('formData: ', formData);
         const selectedEvents = {
-            img: location?.state?.img,
-            tickets: formData.tickets,
-            date: formData.date,
+            img: location?.state?.image_url,
+            tickets: formData.tickets, // bookedTickets
+            date: formData.reservedDate,
             price: formData.price,
             // ticketId:'',
             // bookedTickets:'',
         }
-
         console.log('handleSubmitToCart: ', selectedEvents);
-
         addEvents(selectedEvents);
     }
 
-    // const today = new Date();
-    // const minDate = today.toISOString().split("T")[0];
-    // // Get the end of March date (YYYY-MM-DD)
-    // const endOfMarch = new Date(today.getFullYear(), 2, 31)
-    //     .toISOString()
-    //     .split("T")[0];
-    // useEffect(() => {
-    //     console.log('location.state: ', location.state);
-    //     console.log('today.toISOString(): ', today.toISOString());
-    //     console.log('minDate: ', minDate);
-    //     console.log('Max date: ', endOfMarch);
+    useEffect(() => {
+        // used to get available dates for the event (to show only available dates )
+        fetch(`http://127.0.0.1:3000/available-tickets?eventId=${location.state.event_id}`)
+            .then((res) => {
+                console.log('res:', res);
+                return res.json();
+            }).then((data) => {
+                console.log(`Ticket table for the event ${location.state.event_name}: `, data);
+                // setFetchedTickets(data);
+                const availableDates = data
+                    .filter((ticket: TicketData) => ticket.booked_tickets < ticket.total_tickets)
+                    .map((ticket: TicketData) => ticket.event_date.split("T")[0]); // Extract only the date part
+                const minDate = availableDates.length ? availableDates[0] : ""; // Earliest available date
+                const maxDate = availableDates.length ? availableDates[availableDates.length - 1] : ""; // Latest available date
+                setEventTickets(data);
+                setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    availableDates: availableDates,
+                    minDate: minDate,
+                    maxDate: maxDate,
+                }));
 
-    // }, [])
+                console.log('availableDates:', availableDates, minDate, maxDate);
+            }).catch((err) => {
+                console.log('Avaiable tickets error: ', err);
+            })
+    }, [])
+
+    useEffect(() => {
+
+        formData.reservedDate && fetch(`http://127.0.0.1:3000/available-tickets?eventDate=${formData.reservedDate}&eventId=${location.state.event_id}`)
+            .then((res) => {
+                console.log('res:', res);
+                return res.json();
+            }).then((data) => {
+                console.log('data:', data[0]);
+                setSelectedTicket(data[0]);
+                setFormData((prevData) => ({
+                    ...prevData,
+                    price: data[0]?.ticket_price
+                }))
+            }).catch((e) => {
+                console.log('e: ', e);
+            })
+
+    }, [formData.reservedDate])
 
     return (
         <>
@@ -65,12 +121,12 @@ export default function EventDetails() {
                 <div className="md:w-2/3 w-full">
                     <div className="relative">
                         <img
-                            src={location?.state?.img}
+                            src={location?.state?.image_url}
                             alt="Event-img"
                             className="h-[333px] w-full rounded-2xl"
                         />
                         <div className="absolute bottom-5 left-2">
-                            <h1 className="text-2xl font-extrabold px-2 py-2 text-white">{location?.state?.event}</h1>
+                            <h1 className="text-2xl font-extrabold px-2 py-2 text-white">{location?.state?.event_name}</h1>
                             <div className="px-3 space-y-2">
                                 <div className="flex space-x-2">
                                     <FaMapLocationDot className="w-5 h-5" color="#FFF" />
@@ -79,7 +135,7 @@ export default function EventDetails() {
                                 <div className="flex space-x-2">
                                     <HiMiniCalendarDateRange className="w-5 h-5" color="#FFF" />
                                     <span className="font-extrabold text-white">
-                                        {location?.state?.startDate?.toISOString()?.split('T')[0] + ' | ' + location?.state?.endDate?.toISOString()?.split('T')[0]}
+                                        {location?.state?.start_date?.split('T')[0] + ' | ' + location?.state?.end_date?.split('T')[0]}
                                     </span>
                                 </div>
                             </div>
@@ -116,30 +172,45 @@ export default function EventDetails() {
                                     <div>
                                         <label htmlFor="event-date">Choose the date</label>
                                         <br />
+
                                         <input
                                             type="date"
                                             className="border w-full p-3 rounded"
                                             id="event-date"
                                             onChange={(e) => {
-                                                setFormData((prevFormdate) => ({
-                                                    ...prevFormdate,
-                                                    date: e.target.value
-                                                }))
+                                                const selectedEventTicket: any = eventTickets?.filter((t) => t.event_date == e.target.value)[0];
+                                                setFormData((prevFormData) => ({
+                                                    ...prevFormData,
+                                                    reservedDate: e.target.value,
+                                                    eventTicket: selectedEventTicket
+                                                }));
+
                                             }}
-                                            value={formData.date}
+                                            value={formData.reservedDate}
                                             required
-                                        // min={ }
-                                        // max={ }
+                                            min={formData?.minDate}
+                                            max={formData?.maxDate}
+                                            list="available-dates"
                                         />
+                                        <datalist id="available-dates">
+                                            {formData?.availableDates?.map(date => (
+                                                <option key={date} value={date} />
+                                            ))}
+                                        </datalist>
+
                                     </div>
-                                    {formData.date &&
+                                    {formData.reservedDate &&
                                         <>
                                             <div>
                                                 <label htmlFor="tickets">Choose number of Tiktes</label>
                                                 <div className="flex space-x-3 justify-between">
                                                     <button
                                                         type="button"
-                                                        onClick={() => { setFormData((prevFormdate) => (prevFormdate.tickets === 1 ? prevFormdate : ({ ...prevFormdate, tickets: prevFormdate?.tickets - 1, price: ((prevFormdate?.tickets - 1) * price).toFixed(2) }))) }}
+                                                        onClick={() => {
+
+                                                            setFormData((prevFormdate) => (prevFormdate.tickets === 1 ? prevFormdate : ({ ...prevFormdate, tickets: prevFormdate?.tickets - 1, price: ((prevFormdate?.tickets - 1) * selectedTicket?.ticket_price).toFixed(2) })))
+                                                        }
+                                                        }
                                                         className="px-5 py-2 border-1 rounded cursor-pointer hover:text-white hover:bg-[#ffb477] transition delay-75 duration-75 ease-in-out"
                                                     >
                                                         -
@@ -147,7 +218,11 @@ export default function EventDetails() {
                                                     <div className="px-5 py-2 border-1 rounded">{formData?.tickets}</div>
                                                     <button
                                                         type="button"
-                                                        onClick={() => { setFormData((prevFormdate) => (prevFormdate.tickets === 5 ? prevFormdate : ({ ...prevFormdate, tickets: prevFormdate?.tickets + 1, price: ((prevFormdate?.tickets + 1) * price).toFixed(2), }))) }}
+                                                        onClick={() => {
+                                                            setFormData((prevFormdate) => (prevFormdate.tickets === (selectedTicket?.total_tickets - selectedTicket?.booked_tickets) ? prevFormdate : ({ ...prevFormdate, tickets: prevFormdate?.tickets + 1, price: ((prevFormdate?.tickets + 1) * selectedTicket?.ticket_price).toFixed(2), })))
+                                                        }
+                                                        }
+
                                                         className="px-5 py-2 border-1 rounded cursor-pointer hover:text-white hover:bg-[#ffb477] transition delay-75 duration-75 ease-in-out"
                                                     >
                                                         +

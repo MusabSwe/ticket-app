@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 function App() {
 
-  const [t, i18n] = useTranslation();
+  const [_, i18n] = useTranslation();
 
   useEffect(() => {
     window.document.body.lang = i18n.language;
