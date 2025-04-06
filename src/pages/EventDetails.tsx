@@ -11,8 +11,6 @@ interface TicketForm {
     tickets: number;
     price: number | string;
     availableDates?: Array<string>;
-    minDate?: string;
-    maxDate?: string;
     eventTicket: TicketData[] | null | undefined // row from Ticket table
 }
 
@@ -34,8 +32,6 @@ export default function EventDetails() {
         reservedDate: '', // reservation date
         tickets: 1,
         price: 0,
-        minDate: '',
-        maxDate: '',
         availableDates: [],
         eventTicket: null
     });
@@ -74,20 +70,24 @@ export default function EventDetails() {
             }).then((data) => {
                 console.log(`Ticket table for the event ${location.state.event_name}: `, data);
                 // setFetchedTickets(data);
+                setEventTickets(data); // store ticket table
+
                 const availableDates = data
                     .filter((ticket: TicketData) => ticket.booked_tickets < ticket.total_tickets)
-                    .map((ticket: TicketData) => ticket.event_date.split("T")[0]); // Extract only the date part
-                const minDate = availableDates.length ? availableDates[0] : ""; // Earliest available date
-                const maxDate = availableDates.length ? availableDates[availableDates.length - 1] : ""; // Latest available date
-                setEventTickets(data);
+                    .map((ticket: TicketData) => {
+                        console.log('Before: ', ticket.event_date);
+                        const localDate = new Date(ticket.event_date).toLocaleDateString("en-CA"); // local time YYYY-MM-DD
+                        console.log('After: ', localDate);
+                        return localDate;
+                    });
+
+
                 setFormData((prevFormData) => ({
                     ...prevFormData,
                     availableDates: availableDates,
-                    minDate: minDate,
-                    maxDate: maxDate,
                 }));
 
-                console.log('availableDates:', availableDates, minDate, maxDate);
+                console.log('availableDates:', availableDates);
             }).catch((err) => {
                 console.log('Avaiable tickets error: ', err);
             })
@@ -173,10 +173,9 @@ export default function EventDetails() {
                                         <label htmlFor="event-date">Choose the date</label>
                                         <br />
 
-                                        <input
-                                            type="date"
-                                            className="border w-full p-3 rounded"
+                                        <select
                                             id="event-date"
+                                            className="border w-full p-3 rounded"
                                             onChange={(e) => {
                                                 const selectedEventTicket: any = eventTickets?.filter((t) => t.event_date == e.target.value)[0];
                                                 setFormData((prevFormData) => ({
@@ -184,20 +183,25 @@ export default function EventDetails() {
                                                     reservedDate: e.target.value,
                                                     eventTicket: selectedEventTicket
                                                 }));
-
                                             }}
                                             value={formData.reservedDate}
                                             required
-                                            min={formData?.minDate}
-                                            max={formData?.maxDate}
-                                            list="available-dates"
-                                        />
-                                        <datalist id="available-dates">
-                                            {formData?.availableDates?.map(date => (
-                                                <option key={date} value={date} />
-                                            ))}
-                                        </datalist>
-
+                                        >
+                                            <option value="">Select a date</option>
+                                            {formData?.availableDates ? formData?.availableDates.map((date, index) => {
+                                                return (
+                                                    <option
+                                                        key={index}
+                                                        value={date}
+                                                    >
+                                                        {date}
+                                                    </option>
+                                                );
+                                            })
+                                                :
+                                                null
+                                            }
+                                        </select>
                                     </div>
                                     {formData.reservedDate &&
                                         <>
