@@ -3,6 +3,7 @@ import "./Modal.css";
 import SAR from '../assets/Saudi_Riyal.png';
 import { useCartEvents } from "../store/CartContext";
 import { useTranslation } from "react-i18next";
+import { BiTrash } from "react-icons/bi";
 interface CartProps {
     isOpen: boolean;
     setIsOpen: any;
@@ -36,10 +37,13 @@ export default function Cart({ isOpen, setIsOpen }: CartProps) {
                         <div className='flex w-full justify-around font-extrabold pt-1 text-[#FF9F77] '>
                             <div className='text-sm text-center w-[15%]'> {i18n.language == 'ar' ? 'الحدث' : 'Event'} </div>
                             <p className='text-sm text-center w-1/4'> {i18n.language == 'ar' ? 'التذاكر' : 'Tickets'} </p>
-                            <p className='text-sm text-center w-[35%]'> {i18n.language == 'ar' ? 'التاريخ' : 'Date'} </p>
+                            <p className='text-sm text-center w-[25%]'> {i18n.language == 'ar' ? 'التاريخ' : 'Date'} </p>
                             <p className='text-sm justify-center w-1/4 flex items-center space-x-1'>
                                 <span> {i18n.language == 'ar' ? 'السعر' : 'Price'} </span>
                                 <img src={SAR} className='w-4 h-4' alt="SAR" />
+                            </p>
+                            <p className='text-sm justify-center w-[10%] flex items-center space-x-1'>
+
                             </p>
                         </div>
                         {selectedEvents?.map((event, index) => (
@@ -47,9 +51,10 @@ export default function Cart({ isOpen, setIsOpen }: CartProps) {
                                 <div className='w-[15%] flex justify-center'>
                                     <img src={event.img} className='w-10 h-10 rounded' alt="event-img" />
                                 </div>
-                                <p className='w-1/4 text-center'> {event.tickets} </p>
+                                <p className='w-1/4 text-center'> {event.selectedTickets} </p>
                                 <p className='w-[35%] text-center min-w-[6rem]'> {event.date} </p>
                                 <p className='w-1/4 text-center'> {event.price} </p>
+                                <p className='w-[10%] flex justify-center cursor-pointer'><BiTrash color="red" style={{ width: '100%', height: '18px' }} /></p>
                             </div>
                         ))}
 

@@ -3,16 +3,16 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { useLocation } from "react-router"
 import SAR from '../assets/Saudi_Riyal.png';
-import { useCartEventUpdate } from '../store/CartContext';
+import { useCartEventUpdate, useCartEvents, useUpdateCartEvent } from '../store/CartContext';
 import Message from "../components/Message";
 import { useTranslation } from "react-i18next";
 
 interface TicketForm {
     reservedDate: string;
-    tickets: number;
+    selectedTickets: number;
     price: number | string;
     availableDates?: Array<string>;
-    eventTicket: TicketData[] | null | undefined // row from Ticket table
+    eventTicket: TicketData | any  // row from Ticket table
 }
 
 interface TicketData {
@@ -27,12 +27,14 @@ interface TicketData {
 export default function EventDetails() {
 
     const location = useLocation();
-    const addEvents = useCartEventUpdate();
+    const addTicketsOnCart = useCartEventUpdate(); // to add new tickets to the cart
+    const cartEvents = useCartEvents(); // to get cart list
+    const updateTicketOnCart = useUpdateCartEvent(); // to update existing ticket on the cart
 
     const [_, i18n] = useTranslation();
     const [formData, setFormData] = useState<TicketForm>({
         reservedDate: '', // reservation date
-        tickets: 1,
+        selectedTickets: 1,
         price: 0,
         availableDates: [],
         eventTicket: null
@@ -40,29 +42,35 @@ export default function EventDetails() {
     const [showMsg, setShowMsg] = useState<boolean>(false);
     const [eventTickets, setEventTickets] = useState<TicketData[]>();
 
-    const [selectedTicket, setSelectedTicket] = useState<TicketData>({
-        ticket_price: 0,
-        booked_tickets: 0,
-        event_date: '',
-        event_id: 0,
-        ticket_id: 0,
-        total_tickets: 0
-    });
-
+    function isSelectedTicketOnCart(ticketId: number) {
+        const filteredCart = cartEvents.filter((item) => item.ticket?.ticket_id == ticketId)[0];
+        console.log('filteredCart: ', filteredCart);
+        if (filteredCart) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     const handleSubmitToCart = () => {
-        // console.log('formData: ', formData);
-        const selectedEvents = {
+
+        const selectedTicketOnCart = {
             img: location?.state?.image_url,
-            tickets: formData.tickets, // bookedTickets
+            selectedTickets: formData.selectedTickets, // bookedTickets
             date: formData.reservedDate,
             price: formData.price,
-            // ticketId:'',
-            // bookedTickets:'',
+            ticket: formData?.eventTicket // ticket row in table
         }
-        // console.log('handleSubmitToCart: ', selectedEvents);
-        addEvents(selectedEvents);
+        if (isSelectedTicketOnCart(formData?.eventTicket.ticket_id)) {
+            updateTicketOnCart(formData?.eventTicket.ticket_id, formData.selectedTickets, formData.price)
+        } else {
+            addTicketsOnCart(selectedTicketOnCart);
+        }
     }
+
+    useEffect(() => {
+        cartEvents?.length > 0 && console.log('cartEvents: ', cartEvents);
+    }, [cartEvents.length])
 
     useEffect(() => {
         // used to get available dates for the event (to show only available dates )
@@ -92,34 +100,16 @@ export default function EventDetails() {
 
                 // console.log('availableDates:', availableDates);
             }).catch((err) => {
-                console.log('Avaiable tickets error: ', err);
+                console.log('Available tickets error: ', err);
             })
     }, [])
 
-    useEffect(() => {
-
-        formData.reservedDate && fetch(`http://127.0.0.1:3000/available-tickets?eventDate=${formData.reservedDate}&eventId=${location.state.event_id}`)
-            .then((res) => {
-                // console.log('res:', res);
-                return res.json();
-            }).then((data) => {
-                // console.log('data:', data[0]);
-                setSelectedTicket(data[0]);
-                setFormData((prevData) => ({
-                    ...prevData,
-                    price: data[0]?.ticket_price
-                }))
-            }).catch((e) => {
-                console.log('e: ', e);
-            })
-
-    }, [formData.reservedDate])
 
     return (
         <>
             <section
                 id="event-details"
-                className="flex w-full flex-wrap md:justify-between px-9 lg:px-18 xl:px-24 my-16"
+                className="flex w-full flex-wrap md:justify-between px-9 lg:px-18 xl:px-24 mb-16 mt-5"
             >
                 <div className="md:w-2/3 w-full">
                     <div className="relative">
@@ -190,12 +180,46 @@ export default function EventDetails() {
                                             id="event-date"
                                             className="border w-full p-3 rounded mt-2 mb-1"
                                             onChange={(e) => {
-                                                const selectedEventTicket: any = eventTickets?.filter((t) => t.event_date == e.target.value)[0];
-                                                setFormData((prevFormData) => ({
-                                                    ...prevFormData,
-                                                    reservedDate: e.target.value,
-                                                    eventTicket: selectedEventTicket
-                                                }));
+                                                // fix date to be same format
+                                                const selectedEventTicket: any = eventTickets?.map((t) => {
+                                                    const localDate = new Date(t.event_date).toLocaleDateString("en-CA"); // local time YYYY-MM-DD
+                                                    if (localDate === e.target.value) {
+                                                        return t;
+                                                    }
+                                                    // to remove undfined obj
+                                                }).filter((t) => t)[0];
+                                                // console.log('selectedEventTicket: ', selectedEventTicket);
+                                                // console.log('formDate before update: ', formData);
+                                                // console.log('Selected date: ', e.target.value);
+                                                // console.log('Cart list: ', cartEvents);
+
+                                                // here check if the selected date for the event
+                                                // exist in the cart, so if exist will update the selected before
+                                                // if not will add a new event to the cart list
+                                                const tempEvent = cartEvents.map((cart) => {
+                                                    if (cart.date == e.target.value) {
+                                                        return cart;
+                                                    }
+                                                }).filter((selectedItem) => selectedItem)[0];
+                                                if (tempEvent) {
+                                                    // console.log('Already event with the given date added to the cart: ', tempEvent);
+                                                    setFormData((prevFormData) => ({
+                                                        ...prevFormData,
+                                                        reservedDate: e.target.value,
+                                                        eventTicket: selectedEventTicket,
+                                                        selectedTickets: tempEvent.selectedTickets,
+                                                        price: tempEvent.price
+                                                    }));
+                                                } else {
+                                                    console.log('else');
+                                                    setFormData((prevFormData) => ({
+                                                        ...prevFormData,
+                                                        reservedDate: e.target.value,
+                                                        eventTicket: selectedEventTicket,
+                                                        selectedTickets: 1,
+                                                        price: selectedEventTicket?.ticket_price ? selectedEventTicket?.ticket_price : 0
+                                                    }));
+                                                }
                                             }}
                                             value={formData.reservedDate}
                                             required
@@ -225,18 +249,18 @@ export default function EventDetails() {
                                                         type="button"
                                                         onClick={() => {
 
-                                                            setFormData((prevFormdate) => (prevFormdate.tickets === 1 ? prevFormdate : ({ ...prevFormdate, tickets: prevFormdate?.tickets - 1, price: ((prevFormdate?.tickets - 1) * selectedTicket?.ticket_price).toFixed(2) })))
+                                                            setFormData((prevFormdate) => (prevFormdate.selectedTickets === 1 ? prevFormdate : ({ ...prevFormdate, selectedTickets: prevFormdate?.selectedTickets - 1, price: ((prevFormdate?.selectedTickets - 1) * formData.eventTicket?.ticket_price).toFixed(2) })))
                                                         }
                                                         }
                                                         className="px-5 py-2 border-1 rounded cursor-pointer hover:text-white hover:bg-[#ffb477] transition delay-75 duration-75 ease-in-out"
                                                     >
                                                         -
                                                     </button>
-                                                    <div className="px-5 py-2 border-1 rounded">{formData?.tickets}</div>
+                                                    <div className="px-5 py-2 border-1 rounded">{formData?.selectedTickets}</div>
                                                     <button
                                                         type="button"
                                                         onClick={() => {
-                                                            setFormData((prevFormdate) => (prevFormdate.tickets === (selectedTicket?.total_tickets - selectedTicket?.booked_tickets) ? prevFormdate : ({ ...prevFormdate, tickets: prevFormdate?.tickets + 1, price: ((prevFormdate?.tickets + 1) * selectedTicket?.ticket_price).toFixed(2), })))
+                                                            setFormData((prevFormdate) => (prevFormdate.selectedTickets === (formData?.eventTicket?.total_tickets - formData?.eventTicket?.booked_tickets) ? prevFormdate : ({ ...prevFormdate, selectedTickets: prevFormdate?.selectedTickets + 1, price: ((prevFormdate?.selectedTickets + 1) * formData?.eventTicket?.ticket_price).toFixed(2), })))
                                                         }
                                                         }
 
@@ -273,7 +297,7 @@ export default function EventDetails() {
             </section>
             <Message
                 isOpen={showMsg}
-                message="Event added to the Cart sucessfully"
+                message={i18n.language == "ar" ? "تمت إضافة التذكرة إلى سلة التسوق بنجاح" : "Ticket added to the Cart sucessfully"}
                 setIsOpen={setShowMsg}
                 type={1}
             />

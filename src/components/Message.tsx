@@ -2,7 +2,7 @@ import { IoBagCheckOutline } from "react-icons/io5";
 import "./Modal.css";
 import { useNavigate } from "react-router";
 import { TbShoppingCartCancel } from "react-icons/tb";
-
+import { useTranslation } from "react-i18next";
 interface MessageProps {
     isOpen: boolean;
     setIsOpen: any;
@@ -12,6 +12,7 @@ interface MessageProps {
 
 export default function Message({ isOpen, setIsOpen, message, type }: MessageProps) {
 
+    const [t, i18n] = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -47,9 +48,9 @@ export default function Message({ isOpen, setIsOpen, message, type }: MessagePro
                                 onClick={() => { type == 1 ? navigate('/') : setIsOpen(false) }}
                             >
                                 {type == 1 ?
-                                    'Home'
+                                    i18n.language == 'ar' ? 'الرئيسية' : 'Home'
                                     :
-                                    'Close'
+                                    i18n.language == 'ar' ? 'إغلاق' : 'Close'
                                 }
                             </button>
                         </div>

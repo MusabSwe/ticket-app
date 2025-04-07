@@ -11,6 +11,7 @@ import SAR from '../assets/Saudi_Riyal.png';
 import Cart from './Cart';
 import { useCartEvents } from '../store/CartContext';
 import { useTranslation } from 'react-i18next';
+import { BiTrash } from 'react-icons/bi';
 
 export default function Header() {
 
@@ -106,15 +107,17 @@ export default function Header() {
                                             <span> {i18n.language == 'ar' ? 'السعر' : 'Price'} </span>
                                             <img src={SAR} className='w-4 h-4' alt="SAR" />
                                         </p>
+                                        <p className='text-sm justify-center w-[10%] flex items-center space-x-1'></p>
                                     </div>
                                     {selectedEvents.map((item, index) => (
                                         <div key={index} className='flex justify-around items-center w-full pt-4'>
                                             <div className='w-1/4 flex justify-center'>
                                                 <img src={item.img} className='w-18 h-18 rounded' alt="event-img" />
                                             </div>
-                                            <p className='w-1/4 text-center'> {item.tickets} </p>
+                                            <p className='w-1/4 text-center'> {item.selectedTickets} </p>
                                             <p className='w-1/4 text-center'> {item.date} </p>
                                             <p className='w-1/4 text-center'> {item.price} </p>
+                                            <p className='w-[10%] flex justify-center cursor-pointer'><BiTrash color='red' style={{width:'100%',height:'22px'}} /></p>
                                         </div>
                                     ))}
 
