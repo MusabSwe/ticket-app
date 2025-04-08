@@ -13,7 +13,7 @@ type CartEvent = {
     selectedTickets: number;
     date: string;
     price: string | number;
-    ticket: TicketData | null | undefined
+    ticket: TicketData
 }
 
 type CartEventsContextType = CartEvent[];

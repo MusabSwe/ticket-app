@@ -22,10 +22,10 @@ function App() {
 
   return (
     <main
-      className="h-screen flex flex-col justify-between font-mono"
+      className="min-h-screen overflow-x-hidden flex flex-col justify-between font-mono"
     >
       <Header />
-      <div className="mt-16">
+      <div className="pt-16">
         <ScrollToTop />
         <Routes >
           <Route path="/" element={<Home />} />

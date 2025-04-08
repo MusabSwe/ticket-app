@@ -1,7 +1,7 @@
 import { CgClose } from "react-icons/cg";
 import "./Modal.css";
 import SAR from '../assets/Saudi_Riyal.png';
-import { useCartEvents } from "../store/CartContext";
+import { useCartEvents, useDeleteCartEvent } from "../store/CartContext";
 import { useTranslation } from "react-i18next";
 import { BiTrash } from "react-icons/bi";
 interface CartProps {
@@ -13,6 +13,7 @@ export default function Cart({ isOpen, setIsOpen }: CartProps) {
 
     const [_, i18n] = useTranslation();
     const selectedEvents = useCartEvents();
+    const removeTicket = useDeleteCartEvent();
 
     const handlePayment = () => {
         setIsOpen(false);
@@ -54,7 +55,12 @@ export default function Cart({ isOpen, setIsOpen }: CartProps) {
                                 <p className='w-1/4 text-center'> {event.selectedTickets} </p>
                                 <p className='w-[35%] text-center min-w-[6rem]'> {event.date} </p>
                                 <p className='w-1/4 text-center'> {event.price} </p>
-                                <p className='w-[10%] flex justify-center cursor-pointer'><BiTrash color="red" style={{ width: '100%', height: '18px' }} /></p>
+                                <p
+                                    className='w-[10%] flex justify-center cursor-pointer'
+                                    onClick={() => {removeTicket(event.ticket.ticket_id) }}
+                                >
+                                    <BiTrash color="red" style={{ width: '100%', height: '18px' }} />
+                                </p>
                             </div>
                         ))}
 

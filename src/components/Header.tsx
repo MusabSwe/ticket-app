@@ -12,7 +12,7 @@ import Cart from './Cart';
 import { useCartEvents } from '../store/CartContext';
 import { useTranslation } from 'react-i18next';
 import { BiTrash } from 'react-icons/bi';
-
+import { useDeleteCartEvent} from '../store/CartContext';
 export default function Header() {
 
     const selectedEvents = useCartEvents();
@@ -21,6 +21,8 @@ export default function Header() {
     const [showCart, setShowCart] = useState<boolean>(false);
     const [showCartModal, setShowCartModal] = useState<boolean>(false);
     const [_, i18n] = useTranslation();
+
+    const removeTicket = useDeleteCartEvent();
 
     const navigate = useNavigate();
 
@@ -117,7 +119,12 @@ export default function Header() {
                                             <p className='w-1/4 text-center'> {item.selectedTickets} </p>
                                             <p className='w-1/4 text-center'> {item.date} </p>
                                             <p className='w-1/4 text-center'> {item.price} </p>
-                                            <p className='w-[10%] flex justify-center cursor-pointer'><BiTrash color='red' style={{width:'100%',height:'22px'}} /></p>
+                                            <p
+                                                className='w-[10%] flex justify-center cursor-pointer'
+                                                onClick={() => {removeTicket(item.ticket.ticket_id) }}
+                                            >
+                                                <BiTrash color='red' style={{ width: '100%', height: '22px' }} />
+                                            </p>
                                         </div>
                                     ))}
 
